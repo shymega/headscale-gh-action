@@ -1,0 +1,13 @@
+name: 'Headscale Action'
+description: 'Setup Headscale, and join a network.'
+inputs: 
+  network_id:
+    description: "Networks to join, delimited by \\',\\'"
+    required: true
+    default: ''
+outputs:
+  success:
+    description: "True if successful, false if there's an error (see log)."
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

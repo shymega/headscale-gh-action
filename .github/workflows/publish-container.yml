@@ -1,0 +1,23 @@
+---
+name: "Build and push container"
+on:
+  push:
+  workflow_dispatch:
+  release:
+    types: [published, edited]
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - run: | 
+          OCI_ARCHIVE=$(nix build --no-link --print-out-paths .#packages.x86_64-linux.container)
+          skopeo  copy --dest-creds="$GHCR_USERNAME:$GHCR_ACCESS_TOKEN" "docker-archive:$OCI_ARCHIVE" "$GHCR_REPOSITORY"
+        env:
+          GHCR_REPOSITORY: "docker://ghcr.io/${{ github.repository_owner }}/headscale-gh-action:latest"
+          GHCR_USERNAME: ${{ github.repository_owner }}
+          GHCR_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
