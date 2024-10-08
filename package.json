@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/shymega/headscale-gh-action",
   "dependencies": {
-    "@actions/core": "^1.10.1"
+    "@actions/core": "^1.11.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.2",
