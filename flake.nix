@@ -10,24 +10,32 @@
   outputs =
     { self, ... }@inputs:
     let
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      inherit (inputs.nixpkgs.lib) genAttrs;
-      forEachSystem = genAttrs systems;
+      genPkgs =
+        system:
+        import inputs.nixpkgs {
+          inherit system;
+        };
+      forEachSystem =
+        let
+          systems = [
+            "x86_64-linux"
+            "aarch64-linux"
+            "x86_64-darwin"
+            "aarch64-darwin"
+          ];
+          inherit (inputs.nixpkgs.lib) genAttrs;
+        in
+        genAttrs systems;
     in
     {
       packages = forEachSystem (
         system:
         let
-          pkgs = import inputs.nixpkgs { inherit system; };
+          pkgs = genPkgs system;
         in
         {
           default = self.packages.${system}.action;
-          action = import ./build-aux/nix { inherit pkgs; };
+          action = import ./build-aux/nix { inherit pkgs self; };
           container = import ./build-aux/nix/container {
             inherit pkgs;
             action = self.packages.${system}.action;
@@ -38,7 +46,7 @@
       devShells.default = forEachSystem (
         system:
         let
-          pkgs = import inputs.nixpkgs { inherit system; };
+          pkgs = genPkgs system;
         in
         pkgs.mkShell {
           name = "headscale-gh-action-devshell";

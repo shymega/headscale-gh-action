@@ -1,16 +1,21 @@
-{ pkgs }:
+{ pkgs, self }:
 let
-  inherit (pkgs) lib buildNpmPackage;
+  inherit (pkgs) buildNpmPackage;
 in
+with pkgs;
 buildNpmPackage {
   name = "headscale-gh-action";
   version = "0.1.0";
 
-  src = lib.cleanSource ../../.;
+  src = lib.cleanSource self;
 
   NODE_OPTIONS = "--openssl-legacy-provider";
 
-  npmDepsHash = "sha256-I31UCV5IQ1SZluIoQkblUxNcepFrwn+/uaGYely88a0=";
+  npmDepsHash = "sha256-5tUgcmwb8lx9dVhsg0DTrt2mIAxlkuKMc9+suPlVKjs=";
+
+  buildInputs = [
+    headscale
+  ];
 
   buildPhase = ''
     npm run prepare
@@ -19,11 +24,11 @@ buildNpmPackage {
   # The prepack script runs the build script, which we'd rather do in the build phase.
   npmPackFlags = [ "--ignore-scripts" ];
 
-  meta = with pkgs.lib; {
+  meta = with lib; {
     mainProgram = "headscale-gh-action";
     description = "A GitHub Action for headscale";
-    license = licenses.mit;
-    platforms = platforms.linux ++ platforms.darwin;
+    license = with licenses; mit;
+    platforms = with platforms; linux ++ darwin;
     maintainers = with maintainers; [ shymega ];
   };
 }

@@ -1,30 +1,14 @@
 {
-  pkgs ? import <nixpkgs> { },
+  pkgs,
   action,
 }:
 let
-  inherit (pkgs.dockerTools) buildImage;
-  inherit (pkgs) buildEnv;
+  inherit (pkgs.dockerTools) buildLayeredImage;
 in
-buildImage {
+with pkgs;
+buildLayeredImage {
   name = "headscale-gh-action-container";
 
-  config =
-    let
-      inherit (pkgs.lib) getExe;
-      cmdLine = "${getExe pkgs.nodejs} ${action}/dist/index.js";
-    in
-    {
-      Cmd = "${cmdLine}";
-    };
-
-  copyToRoot = buildEnv {
-    name = "headscale-gh-action";
-    paths = [
-      (buildEnv {
-        name = "headscale-gh-action";
-        paths = [ pkgs.nodejs ];
-      })
-    ];
-  };
+  config.Cmd = [ "${lib.getExe action}" ];
+  contents = [ action ];
 }
