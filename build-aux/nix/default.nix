@@ -11,7 +11,7 @@ buildNpmPackage {
 
   NODE_OPTIONS = "--openssl-legacy-provider";
 
-  npmDepsHash = "sha256-5tUgcmwb8lx9dVhsg0DTrt2mIAxlkuKMc9+suPlVKjs=";
+  npmDepsHash = "sha256-S7eSQ96rr/e2+SGKOdXRMr61U3i5Jj91LbWRT8BX/Ow=";
 
   buildInputs = [
     headscale
