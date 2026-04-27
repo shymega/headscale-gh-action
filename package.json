@@ -26,12 +26,12 @@
   },
   "homepage": "https://github.com/shymega/headscale-gh-action",
   "dependencies": {
-    "@actions/core": "^3.0.0"
+    "@actions/core": "^3.0.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.4",
     "jest": "^30.3.0",
-    "nock": "^14.0.12",
+    "nock": "^14.0.13",
     "semistandard": "^17.0.0"
   },
   "semistandard": {
